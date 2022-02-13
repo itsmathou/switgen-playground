@@ -8,14 +8,36 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.locale) var locale
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        VStack {
+            Text("main.hello_world")
+                .padding()
+            
+            HStack {
+                Button("shared.ok_cta") {
+                    print("Okay 👻")
+                }
+                
+                Button("shared.cancel_cta") {
+                    print("Cancel 🤷🏻‍♀️")
+                }
+            }
+            
+        }
+        
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        Group {
+            ContentView()
+                .environment(\.locale, .init(identifier: "es"))
+            
+            ContentView()
+                .environment(\.locale, .init(identifier: "fr"))
+        }
     }
 }
