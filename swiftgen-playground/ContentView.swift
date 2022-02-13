@@ -12,15 +12,15 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("main.hello_world")
+            Text(L10n.Main.helloWorld)
                 .padding()
             
             HStack {
-                Button("shared.ok_cta") {
+                Button(L10n.Shared.okCta) {
                     print("Okay 👻")
                 }
                 
-                Button("shared.cancel_cta") {
+                Button(L10n.Shared.cancelCta) {
                     print("Cancel 🤷🏻‍♀️")
                 }
             }
@@ -34,10 +34,6 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ContentView()
-                .environment(\.locale, .init(identifier: "es"))
-            
-            ContentView()
-                .environment(\.locale, .init(identifier: "fr"))
         }
     }
 }
