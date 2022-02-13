@@ -1,5 +1,5 @@
 strings:
   inputs: ./swiftgen-playground/en.lproj
   outputs:
-    templateName: structured-swift5
+    templatePath: swiftgen-swiftui-template.stencil
     output: ./swiftgen-playground/Localization.swift

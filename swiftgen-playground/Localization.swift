@@ -1,48 +1,49 @@
-// swiftlint:disable all
 // Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
 
-import Foundation
-
-// swiftlint:disable superfluous_disable_command file_length implicit_return
+import SwiftUI
 
 // MARK: - Strings
 
-// swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
-// swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
-internal enum L10n {
-
-  internal enum Main {
+enum L10n {
+  enum Main {
     /// Hello, world!
-    internal static let helloWorld = L10n.tr("Localizable", "main.hello_world")
+    static let helloWorld = LocalizedString(lookupKey: "main.hello_world")
   }
-
-  internal enum Shared {
+  enum Shared {
     /// Cancel
-    internal static let cancelCta = L10n.tr("Localizable", "shared.cancel_cta")
+    static let cancelCta = LocalizedString(lookupKey: "shared.cancel_cta")
     /// Okay
-    internal static let okCta = L10n.tr("Localizable", "shared.ok_cta")
+    static let okCta = LocalizedString(lookupKey: "shared.ok_cta")
   }
 }
-// swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
-// swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces
 
 // MARK: - Implementation Details
 
 extension L10n {
-  private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
+  fileprivate static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
     let format = BundleToken.bundle.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }
 
-// swiftlint:disable convenience_type
+struct LocalizedString {
+  let lookupKey: String
+
+  var key: LocalizedStringKey {
+    LocalizedStringKey(lookupKey)
+  }
+
+  var text: String {
+    L10n.tr("Localizable", lookupKey)
+  }
+}
+
 private final class BundleToken {
   static let bundle: Bundle = {
     #if SWIFT_PACKAGE
-    return Bundle.module
+      return Bundle.module
     #else
-    return Bundle(for: BundleToken.self)
+      return Bundle(for: BundleToken.self)
     #endif
   }()
 }
-// swiftlint:enable convenience_type
