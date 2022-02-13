@@ -1,0 +1,11 @@
+/* 
+  Localizable.strings
+  swiftgen-playground
+
+  Created by Mathilde Ferrand on 13/02/2022.
+  
+*/
+
+"main.hello_world" = "Bonjour le monde !";
+"shared.ok_cta" = "Okay";
+"shared.cancel_cta" = "Annuler";
