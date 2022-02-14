@@ -11,25 +11,51 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal enum L10n {
 
-  internal enum Main {
+  internal enum Main: String, Localizable  {
     /// Hello, world!
-    internal static let helloWorld = L10n.tr("Localizable", "main.hello_world")
+    case helloWorld
   }
 
-  internal enum Shared {
+  internal enum Shared: String, Localizable  {
     /// Cancel
-    internal static let cancelCta = L10n.tr("Localizable", "shared.cancel_cta")
+    case cancelCta
     /// Okay
-    internal static let okCta = L10n.tr("Localizable", "shared.ok_cta")
+    case okCta
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces
 
+protocol Localizable {
+    var localized: String { get }
+}
+
+extension Localizable {
+    var localized: String {
+        let key = String(reflecting: self).replacingOccurrences(of: "swiftgen_playground.L10n.", with: "")
+        let keySnakeCased = key.snakeCased() ?? key
+        return L10n.tr("Localizable", keySnakeCased)
+    }
+}
+
+private extension String {
+    func snakeCased() -> String? {
+            let acronymPattern = "([A-Z]+)([A-Z][a-z]|[0-9])"
+            let normalPattern = "([a-z0-9])([0-Z])"
+            return processCamelCaseRegex(pattern: acronymPattern)?
+                .processCamelCaseRegex(pattern: normalPattern)?.lowercased()
+        }
+    func processCamelCaseRegex(pattern: String) -> String? {
+            let regex = try? NSRegularExpression(pattern: pattern, options: [])
+            let range = NSRange(location: 0, length: count)
+            return regex?.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "$1_$2")
+        }
+}
+
 // MARK: - Implementation Details
 
-extension L10n {
-  private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
+private extension L10n {
+  static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
     let format = BundleToken.bundle.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
