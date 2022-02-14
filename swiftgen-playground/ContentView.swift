@@ -8,19 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.locale) var locale
     
     var body: some View {
         VStack {
-            Text(L10n.Main.helloWorld)
+            Text(L10n.Main.helloWorld.localized)
                 .padding()
             
             HStack {
-                Button(L10n.Shared.okCta) {
+                Button(L10n.Shared.okCta.localized) {
                     print("Okay 👻")
                 }
                 
-                Button(L10n.Shared.cancelCta) {
+                Button(L10n.Shared.cancelCta.localized) {
                     print("Cancel 🤷🏻‍♀️")
                 }
             }

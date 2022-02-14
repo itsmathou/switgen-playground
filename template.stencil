@@ -46,12 +46,12 @@ import Foundation
   {# custom localization function is mostly used for in-app lang selection, so we want the loc to be recomputed at each call for those (hence the computed var) #}
   {{accessModifier}} static var {{string.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}}: String { return {{enumName}}.tr("{{table}}", "{{string.key}}") }
   {% else %}
-  {{accessModifier}} static let {{string.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}} = {{enumName}}.tr("{{table}}", "{{string.key}}")
+  case {{string.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}}
   {% endif %}
   {% endfor %}
   {% for child in item.children %}
 
-  {{accessModifier}} enum {{child.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
+  {{accessModifier}} enum {{child.name|swiftIdentifier:"pretty"|escapeReservedKeywords}}: String, Localizable  {
     {% filter indent:2 %}{% call recursiveBlock table child %}{% endfilter %}
   }
   {% endfor %}
@@ -73,10 +73,37 @@ import Foundation
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces
 
+protocol Localizable {
+    var localized: String { get }
+}
+
+extension Localizable {
+    var localized: String {
+        let key = String(reflecting: self).replacingOccurrences(of: "swiftgen_playground.L10n.", with: "")
+        let keySnakeCased = key.snakeCased() ?? key
+        return {{enumName}}.tr("Localizable", keySnakeCased)
+    }
+}
+
+private extension String {
+    func snakeCased() -> String? {
+            let acronymPattern = "([A-Z]+)([A-Z][a-z]|[0-9])"
+            let normalPattern = "([a-z0-9])([0-Z])"
+            return processCamelCaseRegex(pattern: acronymPattern)?
+                .processCamelCaseRegex(pattern: normalPattern)?.lowercased()
+        }
+    
+    func processCamelCaseRegex(pattern: String) -> String? {
+            let regex = try? NSRegularExpression(pattern: pattern, options: [])
+            let range = NSRange(location: 0, length: count)
+            return regex?.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "$1_$2")
+        }
+}
+
 // MARK: - Implementation Details
 
-extension {{enumName}} {
-  private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
+private extension {{enumName}} {
+  static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
     {% if param.lookupFunction %}
     let format = {{ param.lookupFunction }}(key, table)
     {% else %}
